@@ -1,15 +1,32 @@
 /**
- * WinCC OA UI PNL/XML Converter
+ * @winccoa-tools-pack/npm-winccoa-docu-builder
  *
- * Provides reliable PNL ⇄ XML transformations for WinCC OA UI panels
- * using the WCCOAui manager under the hood.
+ * Build WinCC OA project documentation via WCCOActrl + buildHelp.ctl.
+ * Worker project is runnable; DocuBuilder is a non-runnable sub-project.
  */
 
-// Types
-export { ConversionDirection, ConversionOptions, ConversionResult } from './types';
-
-// Core converter
-export { PnlXmlConverter } from './converter';
-
-// Convenience API
-export { pnlToXml, xmlToPnl } from './api';
+export type { DocuBuildOptions, DocuBuildResult } from './types';
+export type { RegisterProjectsOptions, RegisterProjectsResult } from './register';
+export {
+    runDocuBuild,
+    buildDocs,
+    buildCtrlArgs,
+    substituteDoxygenVersionPlaceholders,
+    BUILD_HELP_SCRIPT,
+} from './docu-build';
+export {
+    getPackageRoot,
+    getDefaultDocuBuilderProjectPath,
+    getBuildHelpScriptPath,
+    isTransientDocuBuilderPath,
+    getDurableDocuBuilderProjectPath,
+    materializeDocuBuilderProject,
+    resolveDocuBuilderProjectPath,
+} from './paths';
+export {
+    registerDocuBuilderSubProject,
+    registerWorkerProjectWithDocuBuilder,
+    resolveWinCCOAVersion,
+    spawnRegisterProjectCli,
+} from './register';
+export { parseArgs, printUsage, main } from './cli';

@@ -1,4 +1,4 @@
-# apm.yml — npm Shared Library Template
+# apm.yml — npm-winccoa-docu-builder
 # AI agent configuration for this repository
 #
 # Setup (once per machine):
@@ -9,10 +9,10 @@
 # After cloning:
 #   apm install
 
-name: template-npm-shared-library
+name: npm-winccoa-docu-builder
 version: 0.1.0
 description: |
-  AI agent configuration for WinCC OA npm shared library development.
+  AI agent configuration for WinCC OA documentation builder npm package.
 
 dependencies:
   apm:

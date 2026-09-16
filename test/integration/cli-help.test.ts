@@ -28,7 +28,7 @@ test('CLI: "--help" prints usage and exits with code 1', () => {
     _lastSpawnResult = result;
 
     assert.equal(result.status, 1);
-    assert.match(result.stderr ?? '', /Usage: winccoa-pnl-xml/);
+    assert.match(result.stderr ?? '', /Usage: winccoa-docu-builder/);
 });
 
 test.after(() => {
