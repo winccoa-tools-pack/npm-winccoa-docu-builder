@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- initial worker + DocuBuilder documentation builder (#5)
+- Repeatable `--project-docu <path>` CLI option and `DocuBuildOptions.projectDocuPaths`
+- Merge external projectDocu directories into `{worker}/data/projectDocu` before build (org theme + project overrides)
+- `advanced_doxygenConfig.txt` fragments are concatenated in path order; other top-level files use last-wins overwrite
+- Public helpers: `mergeProjectDocuSources`, `normalizeProjectDocuPaths`, `listProjectDocuFiles`, `substituteDoxygenVersionInFile`
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-09-16
 
 ### Added
 
