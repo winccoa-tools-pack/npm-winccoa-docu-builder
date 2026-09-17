@@ -57,13 +57,17 @@ Important: this workflow does **not** update `CHANGELOG.md`.
 
 ## Pre-release + release pipeline
 
-- **Pre-Release (Alpha)** (`.github/workflows/pre-release.yml`)
-  - Runs for PRs targeting `main`
-  - Creates a GitHub pre-release tag like `vX.Y.Z-<sha>` with a tested npm tarball (`*.tgz`)
+- **Pre-Release (Develop)** (`.github/workflows/pre-release-develop.yml`)
+  - Runs from `develop`
+  - Creates develop-only prereleases such as `vX.Y.Z-alpha...` for early testing
+
+- **Pre-Release (Release Branch)** (`.github/workflows/pre-release.yml`)
+  - Runs from `release/vX.Y.Z`
+  - Creates the tested GitHub prerelease tag `vX.Y.Z-<sha>` with the npm tarball (`*.tgz`) that the stable release consumes
 
 - **Release** (`.github/workflows/release.yml` → `release-reusable.yml`)
   - Runs on successful workflow runs on `main`
-  - Requires a matching tested prerelease asset for the version
+  - Requires a matching tested release-branch prerelease asset for the version
   - Creates the stable tag `vX.Y.Z`, attaches the tested tarball (`*.tgz`), and publishes to npm (`NPM_TOKEN`)
 
 ## Branch protection / rulesets
