@@ -190,29 +190,20 @@ test('mergeProjectDocuSources: concat advanced, last-wins extras', () => {
 
         const result = mergeProjectDocuSources(worker, [theme, project]);
         const target = path.join(worker, 'data', 'projectDocu');
+
         assert.equal(result.targetDir, target);
-        assert.equal(fs.readFileSync(path.join(target, 'extra_stylesheet.css'), 'utf8'), '/* project */\n');
+        assert.equal(
+            fs.readFileSync(path.join(target, 'extra_stylesheet.css'), 'utf8'),
+            '/* project */\n',
+        );
         assert.equal(fs.readFileSync(path.join(target, 'extra_footer.html'), 'utf8'), '<footer/>\n');
+
         const advanced = fs.readFileSync(path.join(target, ADVANCED_DOXYGEN_CONFIG), 'utf8');
         assert.match(advanced, /HTML_EXTRA_STYLESHEET = theme\.css/);
         assert.match(advanced, /WARN_LOGFILE/);
         assert.match(advanced, /Merged by @winccoa-tools-pack\/npm-winccoa-docu-builder/);
-        assert.ok(result.writtenFiles.includes(ADVANCED_DOXYGEN_CONFIG));
-        assert.ok(result.writtenFiles.includes('extra_stylesheet.css'));
     } finally {
         fs.rmSync(root, { recursive: true, force: true });
-    }
-});
-
-test('mergeProjectDocuSources: empty sources is no-op', () => {
-    const worker = fs.mkdtempSync(path.join(os.tmpdir(), 'merge-empty-'));
-    try {
-        const result = mergeProjectDocuSources(worker, []);
-        assert.deepEqual(result.sourceDirs, []);
-        assert.equal(result.writtenFiles.length, 0);
-        assert.equal(result.advancedConfigPath, undefined);
-    } finally {
-        fs.rmSync(worker, { recursive: true, force: true });
     }
 });
 

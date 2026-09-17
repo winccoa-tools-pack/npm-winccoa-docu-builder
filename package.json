@@ -1,6 +1,6 @@
 {
   "name": "@winccoa-tools-pack/npm-winccoa-docu-builder",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "CLI and API to build WinCC OA project documentation via WCCOActrl and buildHelp.ctl",
   "author": "winccoa-tools-pack",
   "license": "MIT",
