@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- upmerge main to develop (#9)
+- upmerge main into release/v0.2.2 (#9)
 - apply prettier formatting
 
 ## [0.2.1] - 2026-09-17
