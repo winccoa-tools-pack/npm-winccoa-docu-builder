@@ -38,4 +38,4 @@ export {
     normalizeProjectDocuPaths,
     substituteDoxygenVersionInFile,
 } from './project-docu';
-export { parseArgs, printUsage, main, expandProjectDocuArg } from './cli';
+export { expandProjectDocuArg, parseArgs, printUsage, main } from './cli';

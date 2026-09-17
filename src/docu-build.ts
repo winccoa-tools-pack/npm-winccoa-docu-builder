@@ -3,6 +3,12 @@ import path from 'node:path';
 import { CtrlComponent } from '@winccoa-tools-pack/npm-winccoa-core/types/components/implementations/CtrlComponent';
 import type { DocuBuildOptions, DocuBuildResult } from './types';
 import { getBuildHelpScriptPath, resolveDocuBuilderProjectPath } from './paths';
+import {
+    ADVANCED_DOXYGEN_CONFIG,
+    WORKER_PROJECT_DOCU_REL,
+    mergeProjectDocuSources,
+    substituteDoxygenVersionInFile,
+} from './project-docu';
 import { registerWorkerProjectWithDocuBuilder, resolveWinCCOAVersion } from './register';
 import {
     ADVANCED_DOXYGEN_CONFIG,

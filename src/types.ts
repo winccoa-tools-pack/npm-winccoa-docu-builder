@@ -128,13 +128,9 @@ export interface DocuBuildOptions {
      * Contents are merged into `{projectPath}/data/projectDocu` before the
      * build so WinCC OA can discover advanced config and extras.
      *
-     * Merge policy (left → right):
-     * - `advanced_doxygenConfig.txt` fragments are concatenated (later keys
-     *   override earlier Doxygen settings).
+     * Merge policy (left to right):
+     * - `advanced_doxygenConfig.txt` fragments are concatenated.
      * - Other top-level files use last-wins overwrite.
-     *
-     * Typical layering: org theme → shared extras → project overrides.
-     * Repeatable CLI flag: `--project-docu <path>`.
      */
     projectDocuPaths?: string[];
 }

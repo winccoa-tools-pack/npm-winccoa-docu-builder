@@ -10,7 +10,7 @@ non-runnable **DocuBuilder** subproject (`buildHelp.ctl`).
    DocuBuilder attached via `--sub-project DocuBuilder`
    (`@winccoa-tools-pack/npm-winccoa-register-project`).
 3. Optionally merge external **projectDocu** asset directories into the worker
-   `data/projectDocu` (theme CSS, advanced Doxygen config, extras).
+  `data/projectDocu` (theme CSS, advanced Doxygen config, extras).
 4. Start CTRL against the **worker** config (not `-proj DocuBuilder`):
 
 ```text
@@ -21,8 +21,8 @@ Why this is correct:
 
 - The worker project owns logs and help output (not DocuBuilder).
 - `getPath` / script resolution uses DocuBuilder as a sub-project.
-- Docs assets can live outside the productive tree (e.g. `.winccoa-docu-builder/`,
-  `.doxygen-awesome-css/`) and still be discovered by OA next to advanced config.
+- Docs assets can live outside the productive tree and still be discovered by
+  OA next to advanced config.
 - v1 builds docs from the **runner/worker project only** (tests later).
 
 ## Install
@@ -40,7 +40,7 @@ winccoa-docu-builder register ./src/Squirt -v 3.21
 # Build docs (registers first by default)
 winccoa-docu-builder build ./src/Squirt -v 3.21 -c "winccoa-tools-pack"
 
-# Layer external projectDocu sources (repeatable; left → right)
+# Layer external projectDocu sources (repeatable; left to right)
 winccoa-docu-builder build ./src/Squirt -v 3.21 \
   --project-docu ./.doxygen-awesome-css \
   --project-docu ./.winccoa-docu-builder
@@ -52,8 +52,8 @@ Sources are copied into `{worker}/data/projectDocu` before the build:
 
 | File | Policy |
 | --- | --- |
-| `advanced_doxygenConfig.txt` | Concatenate in path order (later Doxygen keys win) |
-| Other top-level files (`extra_*.html`, `extra_stylesheet.css`, …) | Last path wins |
+| `advanced_doxygenConfig.txt` | Concatenate in path order (later keys win) |
+| Other top-level files (`extra_*.html`, `extra_stylesheet.css`, ...) | Last path wins |
 
 ## Local registration helpers
 

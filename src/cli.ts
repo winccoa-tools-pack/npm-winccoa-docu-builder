@@ -17,7 +17,6 @@ export interface ParsedCliArgs {
     docuBuilderProjectPath?: string;
     registerProject: boolean;
     timeout?: number;
-    /** Ordered external projectDocu directories (repeatable --project-docu). */
     projectDocuPaths?: string[];
 }
 
@@ -37,10 +36,7 @@ export function printUsage(): void {
             '  -c, --company <name>           Company label for buildHelp.ctl',
             '  --langs <csv>                  Worker project langs (default: en_US.utf8)',
             '  --docu-builder-path <path>     DocuBuilder sub-project (default: package)',
-            '  --project-docu <path>          External projectDocu dir (repeatable;',
-            '                                 merges into worker data/projectDocu;',
-            '                                 advanced config concatenates, other',
-            '                                 files last-wins)',
+            '  --project-docu <path>          External projectDocu dir (repeatable)',
             '  --no-register                  Skip registration (use existing worker config)',
             '  -t, --timeout <ms>             WCCOActrl timeout in ms (default: 600000)',
             '  -h, --help                     Show this help',
@@ -48,9 +44,9 @@ export function printUsage(): void {
             'Examples:',
             '  ' + bin + ' register ./src/Squirt -v 3.21',
             '  ' + bin + ' build ./src/Squirt -v 3.21 -c "winccoa-tools-pack"',
-            '  ' + bin + ' build ./src/Squirt -v 3.21 \\',
-            '    --project-docu ./.doxygen-awesome-css \\',
-            '    --project-docu ./.winccoa-docu-builder',
+            '  ' +
+                bin +
+                ' build ./src/Squirt -v 3.21 --project-docu ./.doxygen-awesome-css --project-docu ./.winccoa-docu-builder',
             '',
             'Flow:',
             '  1. Register bundled DocuBuilder as non-runnable',
@@ -68,14 +64,10 @@ export function printUsage(): void {
     );
 }
 
-/**
- * Expand one --project-docu value: path may be a single directory or a
- * comma/semicolon-separated list (also supports newlines from shell expansion).
- */
 export function expandProjectDocuArg(raw: string): string[] {
     return raw
         .split(/[\n,;]+/)
-        .map((s) => s.trim())
+        .map((entry) => entry.trim())
         .filter(Boolean);
 }
 
