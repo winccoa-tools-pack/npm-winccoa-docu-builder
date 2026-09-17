@@ -9,7 +9,9 @@ non-runnable **DocuBuilder** subproject (`buildHelp.ctl`).
 2. Register the **worker / source project** (e.g. Squirt) as **runnable**, with
    DocuBuilder attached via `--sub-project DocuBuilder`
    (`@winccoa-tools-pack/npm-winccoa-register-project`).
-3. Start CTRL against the **worker** config (not `-proj DocuBuilder`):
+3. Optionally merge external **projectDocu** asset directories into the worker
+   `data/projectDocu` (theme CSS, advanced Doxygen config, extras).
+4. Start CTRL against the **worker** config (not `-proj DocuBuilder`):
 
 ```text
 WCCOActrl -config <worker>/config/config -n -log +stderr buildHelp.ctl <CompanyName>
@@ -19,6 +21,8 @@ Why this is correct:
 
 - The worker project owns logs and help output (not DocuBuilder).
 - `getPath` / script resolution uses DocuBuilder as a sub-project.
+- Docs assets can live outside the productive tree (e.g. `.winccoa-docu-builder/`,
+  `.doxygen-awesome-css/`) and still be discovered by OA next to advanced config.
 - v1 builds docs from the **runner/worker project only** (tests later).
 
 ## Install
@@ -35,7 +39,21 @@ winccoa-docu-builder register ./src/Squirt -v 3.21
 
 # Build docs (registers first by default)
 winccoa-docu-builder build ./src/Squirt -v 3.21 -c "winccoa-tools-pack"
+
+# Layer external projectDocu sources (repeatable; left → right)
+winccoa-docu-builder build ./src/Squirt -v 3.21 \
+  --project-docu ./.doxygen-awesome-css \
+  --project-docu ./.winccoa-docu-builder
 ```
+
+### projectDocu merge rules
+
+Sources are copied into `{worker}/data/projectDocu` before the build:
+
+| File | Policy |
+| --- | --- |
+| `advanced_doxygenConfig.txt` | Concatenate in path order (later Doxygen keys win) |
+| Other top-level files (`extra_*.html`, `extra_stylesheet.css`, …) | Last path wins |
 
 ## Local registration helpers
 
@@ -61,6 +79,7 @@ PowerShell (Windows local):
 ```ts
 import {
   buildDocs,
+  mergeProjectDocuSources,
   registerWorkerProjectWithDocuBuilder,
 } from '@winccoa-tools-pack/npm-winccoa-docu-builder';
 
@@ -74,6 +93,10 @@ const result = await buildDocs({
   version: '3.21',
   companyName: 'winccoa-tools-pack',
   registerProject: false,
+  projectDocuPaths: [
+    './.doxygen-awesome-css',
+    './.winccoa-docu-builder',
+  ],
 });
 ```
 
@@ -92,6 +115,7 @@ project owns `config/config`, logs, and help when CTRL runs with `-config`.
 Use
 [`winccoa-tools-pack/github-actions-winccoa/actions/winccoa-docu-builder`](https://github.com/winccoa-tools-pack/github-actions-winccoa/tree/main/actions/winccoa-docu-builder)
 to run this package in CI with warning extraction and PR annotations.
+Pass multi-line `project-docu-paths` to layer external asset directories.
 
 ## Development
 

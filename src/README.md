@@ -2,6 +2,7 @@
 
 - `cli.ts` — CLI (`winccoa-docu-builder` build|register)
 - `docu-build.ts` — run WCCOActrl with `-config` against worker project
+- `project-docu.ts` — merge external projectDocu dirs into worker data/projectDocu
 - `register.ts` — DocuBuilder + worker registration (sub-project model)
 - `paths.ts` — resolve bundled `winccoa/DocuBuilder`
 - `types.ts` — public option/result types
