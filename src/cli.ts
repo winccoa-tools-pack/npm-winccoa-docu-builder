@@ -17,6 +17,7 @@ export interface ParsedCliArgs {
     docuBuilderProjectPath?: string;
     registerProject: boolean;
     timeout?: number;
+    projectDocuPaths?: string[];
 }
 
 export function printUsage(): void {
@@ -35,6 +36,7 @@ export function printUsage(): void {
             '  -c, --company <name>           Company label for buildHelp.ctl',
             '  --langs <csv>                  Worker project langs (default: en_US.utf8)',
             '  --docu-builder-path <path>     DocuBuilder sub-project (default: package)',
+            '  --project-docu <path>          External projectDocu dir (repeatable)',
             '  --no-register                  Skip registration (use existing worker config)',
             '  -t, --timeout <ms>             WCCOActrl timeout in ms (default: 600000)',
             '  -h, --help                     Show this help',
@@ -42,11 +44,15 @@ export function printUsage(): void {
             'Examples:',
             '  ' + bin + ' register ./src/Squirt -v 3.21',
             '  ' + bin + ' build ./src/Squirt -v 3.21 -c "winccoa-tools-pack"',
+            '  ' +
+                bin +
+                ' build ./src/Squirt -v 3.21 --project-docu ./.doxygen-awesome-css --project-docu ./.winccoa-docu-builder',
             '',
             'Flow:',
             '  1. Register bundled DocuBuilder as non-runnable',
             '  2. Register worker project as runnable with DocuBuilder as sub-project',
-            '  3. WCCOActrl -config <worker>/config/config -n -log +stderr buildHelp.ctl <Company>',
+            '  3. Merge --project-docu sources into worker data/projectDocu',
+            '  4. WCCOActrl -config <worker>/config/config -n -log +stderr buildHelp.ctl <Company>',
             '',
             '  Logs and help output stay on the worker project, not DocuBuilder.',
             '  v1 builds docs from the runner/worker project only.',
@@ -56,6 +62,13 @@ export function printUsage(): void {
             '',
         ].join('\n'),
     );
+}
+
+export function expandProjectDocuArg(raw: string): string[] {
+    return raw
+        .split(/[\n,;]+/)
+        .map((entry) => entry.trim())
+        .filter(Boolean);
 }
 
 export function parseArgs(argv: string[]): ParsedCliArgs | null {
@@ -85,6 +98,7 @@ export function parseArgs(argv: string[]): ParsedCliArgs | null {
     let docuBuilderProjectPath: string | undefined;
     let registerProject = true;
     let timeout: number | undefined;
+    const projectDocuPaths: string[] = [];
 
     let i = 2;
     while (i < args.length) {
@@ -109,6 +123,15 @@ export function parseArgs(argv: string[]): ParsedCliArgs | null {
             case '--docu-builder-path':
                 docuBuilderProjectPath = args[++i] ?? '';
                 break;
+            case '--project-docu': {
+                const raw = args[++i] ?? '';
+                if (!raw || raw.startsWith('-')) {
+                    process.stderr.write('Error: --project-docu requires a path.\n');
+                    return null;
+                }
+                projectDocuPaths.push(...expandProjectDocuArg(raw));
+                break;
+            }
             case '--no-register':
                 registerProject = false;
                 break;
@@ -139,6 +162,7 @@ export function parseArgs(argv: string[]): ParsedCliArgs | null {
         docuBuilderProjectPath: docuBuilderProjectPath || undefined,
         registerProject,
         timeout,
+        projectDocuPaths: projectDocuPaths.length > 0 ? projectDocuPaths : undefined,
     };
 }
 
@@ -175,9 +199,15 @@ export async function main(argv: string[] = process.argv): Promise<number> {
             docuBuilderProjectPath: parsed.docuBuilderProjectPath,
             registerProject: parsed.registerProject,
             timeout: parsed.timeout,
+            projectDocuPaths: parsed.projectDocuPaths,
         };
 
         process.stderr.write('Building docs for project ' + parsed.projectPath + '\n');
+        if (parsed.projectDocuPaths?.length) {
+            process.stderr.write(
+                'Merging projectDocu sources: ' + parsed.projectDocuPaths.join(', ') + '\n',
+            );
+        }
 
         const result = await buildDocs(options);
 
