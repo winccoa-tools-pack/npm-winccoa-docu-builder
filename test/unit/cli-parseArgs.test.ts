@@ -71,7 +71,7 @@ test('parseArgs: repeatable --project-docu preserves order', () => {
         '-v',
         '3.21',
         '--project-docu',
-        './.doxygen-awesome-css',
+        './.documentation-theme',
         '--project-docu',
         './.winccoa-docu-builder',
         '--project-docu',
@@ -80,7 +80,7 @@ test('parseArgs: repeatable --project-docu preserves order', () => {
 
     assert.ok(parsed);
     assert.deepEqual(parsed.projectDocuPaths, [
-        './.doxygen-awesome-css',
+        './.documentation-theme',
         './.winccoa-docu-builder',
         'a',
         'b',

@@ -10,7 +10,7 @@ non-runnable **DocuBuilder** subproject (`buildHelp.ctl`).
    DocuBuilder attached via `--sub-project DocuBuilder`
    (`@winccoa-tools-pack/npm-winccoa-register-project`).
 3. Optionally merge external **projectDocu** asset directories into the worker
-  `data/projectDocu` (theme CSS, advanced Doxygen config, extras).
+  `data/projectDocu` (theme CSS, advanced documentation config, extras).
 4. Start CTRL against the **worker** config (not `-proj DocuBuilder`):
 
 ```text
@@ -42,7 +42,7 @@ winccoa-docu-builder build ./src/Squirt -v 3.21 -c "winccoa-tools-pack"
 
 # Layer external projectDocu sources (repeatable; left to right)
 winccoa-docu-builder build ./src/Squirt -v 3.21 \
-  --project-docu ./.doxygen-awesome-css \
+  --project-docu ./.documentation-theme \
   --project-docu ./.winccoa-docu-builder
 ```
 
@@ -52,7 +52,7 @@ Sources are copied into `{worker}/data/projectDocu` before the build:
 
 | File | Policy |
 | --- | --- |
-| `advanced_doxygenConfig.txt` | Concatenate in path order (later keys win) |
+| Advanced config fragment | Concatenate in path order (later keys win) |
 | Other top-level files (`extra_*.html`, `extra_stylesheet.css`, ...) | Last path wins |
 
 ## Local registration helpers
@@ -94,7 +94,7 @@ const result = await buildDocs({
   companyName: 'winccoa-tools-pack',
   registerProject: false,
   projectDocuPaths: [
-    './.doxygen-awesome-css',
+    './.documentation-theme',
     './.winccoa-docu-builder',
   ],
 });
