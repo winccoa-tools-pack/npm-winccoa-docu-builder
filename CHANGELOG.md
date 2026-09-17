@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Restore `--project-docu` CLI support in the published package and merge
-	external `projectDocu` sources into the worker project before docs builds
+  external `projectDocu` sources into the worker project before docs builds
 
 ## [0.2.0] - 2026-09-17
 

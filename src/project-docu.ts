@@ -52,9 +52,7 @@ export function mergeProjectDocuSources(
             targetDir,
             sourceDirs: [],
             writtenFiles: listProjectDocuFiles(targetDir),
-            advancedConfigPath: fs.existsSync(advancedConfigPath)
-                ? advancedConfigPath
-                : undefined,
+            advancedConfigPath: fs.existsSync(advancedConfigPath) ? advancedConfigPath : undefined,
         };
     }
 
@@ -124,10 +122,6 @@ export function substituteDoxygenVersionInFile(
         return false;
     }
 
-    fs.writeFileSync(
-        advancedConfigPath,
-        original.split('%WINCCOA_VERSION%').join(version),
-        'utf8',
-    );
+    fs.writeFileSync(advancedConfigPath, original.split('%WINCCOA_VERSION%').join(version), 'utf8');
     return true;
 }
