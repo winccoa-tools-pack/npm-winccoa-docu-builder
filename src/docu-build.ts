@@ -4,6 +4,12 @@ import { CtrlComponent } from '@winccoa-tools-pack/npm-winccoa-core/types/compon
 import type { DocuBuildOptions, DocuBuildResult } from './types';
 import { getBuildHelpScriptPath, resolveDocuBuilderProjectPath } from './paths';
 import { registerWorkerProjectWithDocuBuilder, resolveWinCCOAVersion } from './register';
+import {
+    ADVANCED_DOXYGEN_CONFIG,
+    WORKER_PROJECT_DOCU_REL,
+    mergeProjectDocuSources,
+    substituteDoxygenVersionInFile,
+} from './project-docu';
 
 /** Default 10 minutes — doxygen builds can be slow. */
 const DEFAULT_TIMEOUT = 600_000;
@@ -46,16 +52,11 @@ export function substituteDoxygenVersionPlaceholders(
     projectPath: string,
     version: string,
 ): string | undefined {
-    const docConfig = path.join(projectPath, 'data', 'projectDocu', 'advanced_doxygenConfig.txt');
+    const docConfig = path.join(projectPath, WORKER_PROJECT_DOCU_REL, ADVANCED_DOXYGEN_CONFIG);
     if (!fs.existsSync(docConfig)) {
         return undefined;
     }
-    const original = fs.readFileSync(docConfig, 'utf8');
-    if (!original.includes('%WINCCOA_VERSION%')) {
-        return docConfig;
-    }
-    const updated = original.split('%WINCCOA_VERSION%').join(version);
-    fs.writeFileSync(docConfig, updated, 'utf8');
+    substituteDoxygenVersionInFile(docConfig, version);
     return docConfig;
 }
 
@@ -108,6 +109,7 @@ export async function runDocuBuild(options: DocuBuildOptions): Promise<DocuBuild
     fs.mkdirSync(path.join(projectPath, 'log'), { recursive: true });
     fs.mkdirSync(path.join(projectPath, 'help'), { recursive: true });
 
+    mergeProjectDocuSources(projectPath, options.projectDocuPaths);
     substituteDoxygenVersionPlaceholders(projectPath, version);
 
     const ctrl = new CtrlComponent();
