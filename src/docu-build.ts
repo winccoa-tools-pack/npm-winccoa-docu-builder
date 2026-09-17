@@ -10,6 +10,12 @@ import {
     substituteDoxygenVersionInFile,
 } from './project-docu';
 import { registerWorkerProjectWithDocuBuilder, resolveWinCCOAVersion } from './register';
+import {
+    ADVANCED_DOXYGEN_CONFIG,
+    WORKER_PROJECT_DOCU_REL,
+    mergeProjectDocuSources,
+    substituteDoxygenVersionInFile,
+} from './project-docu';
 
 /** Default 10 minutes — doxygen builds can be slow. */
 const DEFAULT_TIMEOUT = 600_000;
