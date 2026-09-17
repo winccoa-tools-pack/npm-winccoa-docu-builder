@@ -7,6 +7,7 @@
 
 export type { DocuBuildOptions, DocuBuildResult } from './types';
 export type { RegisterProjectsOptions, RegisterProjectsResult } from './register';
+export type { ProjectDocuMergeResult } from './project-docu';
 export {
     runDocuBuild,
     buildDocs,
@@ -29,4 +30,12 @@ export {
     resolveWinCCOAVersion,
     spawnRegisterProjectCli,
 } from './register';
-export { parseArgs, printUsage, main } from './cli';
+export {
+    ADVANCED_DOXYGEN_CONFIG,
+    WORKER_PROJECT_DOCU_REL,
+    listProjectDocuFiles,
+    mergeProjectDocuSources,
+    normalizeProjectDocuPaths,
+    substituteDoxygenVersionInFile,
+} from './project-docu';
+export { expandProjectDocuArg, parseArgs, printUsage, main } from './cli';

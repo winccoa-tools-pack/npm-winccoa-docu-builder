@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { parseArgs } from '../../src/cli';
+import { expandProjectDocuArg, parseArgs } from '../../src/cli';
 import { buildCtrlArgs, substituteDoxygenVersionPlaceholders } from '../../src/docu-build';
 import {
     getBuildHelpScriptPath,
@@ -13,6 +13,7 @@ import {
     isTransientDocuBuilderPath,
     materializeDocuBuilderProject,
 } from '../../src/paths';
+import { ADVANCED_DOXYGEN_CONFIG, mergeProjectDocuSources } from '../../src/project-docu';
 
 test('parseArgs: returns null for --help', () => {
     const parsed = parseArgs(['node', 'cli.ts', '--help']);
@@ -59,6 +60,36 @@ test('parseArgs: register and --no-register', () => {
     assert.equal(parsed.command, 'register');
     assert.equal(parsed.registerProject, false);
     assert.deepEqual(parsed.langs, ['en_US.utf8', 'de_AT.utf8']);
+});
+
+test('parseArgs: repeatable --project-docu preserves order', () => {
+    const parsed = parseArgs([
+        'node',
+        'cli.ts',
+        'build',
+        './src/Squirt',
+        '-v',
+        '3.21',
+        '--project-docu',
+        './.doxygen-awesome-css',
+        '--project-docu',
+        './.winccoa-docu-builder',
+        '--project-docu',
+        'a,b;c',
+    ]);
+
+    assert.ok(parsed);
+    assert.deepEqual(parsed.projectDocuPaths, [
+        './.doxygen-awesome-css',
+        './.winccoa-docu-builder',
+        'a',
+        'b',
+        'c',
+    ]);
+});
+
+test('expandProjectDocuArg: splits comma/semicolon/newlines', () => {
+    assert.deepEqual(expandProjectDocuArg('x\ny,z;w'), ['x', 'y', 'z', 'w']);
 });
 
 test('parseArgs: rejects unknown command', () => {
@@ -130,6 +161,49 @@ test('substituteDoxygenVersionPlaceholders rewrites token when present', () => {
         assert.equal(fs.readFileSync(cfg, 'utf8'), 'PROJECT_NUMBER = 3.21\n');
     } finally {
         fs.rmSync(tmp, { recursive: true, force: true });
+    }
+});
+
+test('mergeProjectDocuSources: concat advanced, last-wins extras', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'merge-docu-'));
+    try {
+        const worker = path.join(root, 'worker');
+        const theme = path.join(root, 'theme');
+        const project = path.join(root, 'project');
+        fs.mkdirSync(worker, { recursive: true });
+        fs.mkdirSync(theme, { recursive: true });
+        fs.mkdirSync(project, { recursive: true });
+
+        fs.writeFileSync(path.join(theme, 'extra_stylesheet.css'), '/* theme */\n', 'utf8');
+        fs.writeFileSync(
+            path.join(theme, ADVANCED_DOXYGEN_CONFIG),
+            'HTML_EXTRA_STYLESHEET = theme.css\n',
+            'utf8',
+        );
+        fs.writeFileSync(path.join(project, 'extra_stylesheet.css'), '/* project */\n', 'utf8');
+        fs.writeFileSync(
+            path.join(project, ADVANCED_DOXYGEN_CONFIG),
+            'WARN_LOGFILE = $PROJ_PATH/log/doxygen_warn_logfile.txt\n',
+            'utf8',
+        );
+        fs.writeFileSync(path.join(project, 'extra_footer.html'), '<footer/>\n', 'utf8');
+
+        const result = mergeProjectDocuSources(worker, [theme, project]);
+        const target = path.join(worker, 'data', 'projectDocu');
+
+        assert.equal(result.targetDir, target);
+        assert.equal(
+            fs.readFileSync(path.join(target, 'extra_stylesheet.css'), 'utf8'),
+            '/* project */\n',
+        );
+        assert.equal(fs.readFileSync(path.join(target, 'extra_footer.html'), 'utf8'), '<footer/>\n');
+
+        const advanced = fs.readFileSync(path.join(target, ADVANCED_DOXYGEN_CONFIG), 'utf8');
+        assert.match(advanced, /HTML_EXTRA_STYLESHEET = theme\.css/);
+        assert.match(advanced, /WARN_LOGFILE/);
+        assert.match(advanced, /Merged by @winccoa-tools-pack\/npm-winccoa-docu-builder/);
+    } finally {
+        fs.rmSync(root, { recursive: true, force: true });
     }
 });
 

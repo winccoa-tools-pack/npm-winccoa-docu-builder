@@ -122,6 +122,17 @@ export interface DocuBuildOptions {
      * @default 600000
      */
     timeout?: number;
+
+    /**
+     * Ordered paths to external `projectDocu` asset directories.
+     * Contents are merged into `{projectPath}/data/projectDocu` before the
+     * build so WinCC OA can discover advanced config and extras.
+     *
+     * Merge policy (left to right):
+     * - `advanced_doxygenConfig.txt` fragments are concatenated.
+     * - Other top-level files use last-wins overwrite.
+     */
+    projectDocuPaths?: string[];
 }
 
 /**
