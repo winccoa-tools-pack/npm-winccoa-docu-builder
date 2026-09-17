@@ -46,7 +46,7 @@ export function printUsage(): void {
             '  ' + bin + ' build ./src/Squirt -v 3.21 -c "winccoa-tools-pack"',
             '  ' +
                 bin +
-                ' build ./src/Squirt -v 3.21 --project-docu ./.doxygen-awesome-css --project-docu ./.winccoa-docu-builder',
+                ' build ./src/Squirt -v 3.21 --project-docu ./.documentation-theme --project-docu ./.winccoa-docu-builder',
             '',
             'Flow:',
             '  1. Register bundled DocuBuilder as non-runnable',
