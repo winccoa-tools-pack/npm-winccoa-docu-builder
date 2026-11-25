@@ -1,5 +1,7 @@
 # npm-winccoa-docu-builder
 
+> **Not published to npm yet.** This package is still under development and has no release. Its API and contents may change before the first release. This notice is removed with the first release.
+
 Build WinCC OA **project documentation** using `WCCOActrl` and the bundled
 non-runnable **DocuBuilder** subproject (`buildHelp.ctl`).
 
